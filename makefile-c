@@ -1,0 +1,61 @@
+##############################################################################
+################################ makefile-c ##################################
+##############################################################################
+#                                                                            #
+#   complete makefile of SDDPBlock                                           #
+#                                                                            #
+#   The makefile defines internally all external libraries (comprised the    #
+#   SMS++ one) required by SDDPBlock. Accordingly, all necessary OBJ, H,     #
+#   -I directives, external libraries + -L<libdirs> are added to the         #
+#   corresponding SDDPBk* macros.                                            #
+#                                                                            #
+#   Input:  $(CC)        = compiler command                                  #
+#           $(SW)        = compiler options                                  #
+#           $(SDDPBkSDR) = the directory where SDDPBlock source is           #
+#                                                                            #
+#   Output: $(SDDPBkOBJ) = the final object(s) / library                     #
+#           $(SDDPBkLIB) = external libraries + -L<libdirs>                  #
+#           $(SDDPBkH)   = the .h files to include for SDDPBlock             #
+#           $(SDDPBkINC) = the -I$( SDDPBlock directory )                    #
+#                                                                            #
+#                              Antonio Frangioni                             #
+#                         Dipartimento di Informatica                        #
+#                             Universita' di Pisa                            #
+#                                                                            #
+##############################################################################
+
+# define & include the necessary modules- - - - - - - - - - - - - - - - - - -
+# if a module is not used in the current configuration, just comment out the
+# corresponding include line
+# each module outputs some macros to be used here:
+# *OBJ is the final object/library
+# *H   is the list of all include files
+# *INC is the -I<include directories>
+
+# define input macros for SMS++ complete makefile, then include it
+SMS++SDR = $(SDDPBkSDR)../SMS++/
+include $(SMS++SDR)lib/makefile-c
+
+# define input macros for StochasticBlock makefile, then include it
+StcBlkSDR = $(SDDPBkSDR)../StochasticBlock/
+include $(StcBlkSDR)makefile
+
+# define input macros for libStOpt makefile, then include it
+libStOptDIR = $(SDDPBkSDR)../extlib/
+include $(libStOptDIR)makefile-libStOpt
+
+# include the makefile requiring all external modules in input
+include $(SDDPBkSDR)/makefile
+
+# macroes to be exported- - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# append external -I directives to SDDPBkINC, SDDPBkOBJ and SDDPBkH as
+# defined by the makefile, thus the := assignment has to be used (use GNU make)
+SDDPBkOBJ := $(SDDPBkOBJ) $(StcBlkOBJ) $(SMS++OBJ)
+SDDPBkH := $(SDDPBkH) $(StcBlkH) $(SMS++H)
+SDDPBkINC := $(SMS++INC) $(StcBlkINC) $(libStOptINC) $(SDDPBkINC)
+
+# external libreries for SDDPBlock
+SDDPBkLIB = $(SMS++LIB) $(libStOptLIB)
+
+########################### End of makefile-c ################################
