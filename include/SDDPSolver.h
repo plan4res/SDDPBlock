@@ -421,6 +421,11 @@ public:
    * sub-Block at stage t will be output into a file called "logfile-t-i". By
    * default, this is empty. */
 
+  strDirOUT,
+  ///< path where the results are written
+  /**< this can be empty
+   * in that case results are written where solver is launched */
+  
   strLastAlgPar
   ///< first allowed new string parameter for derived classes
   /**< Convenience value for easily allow derived classes
@@ -634,6 +639,8 @@ public:
   *
   * - #strSubSolverLogFilePrefix
   *
+  * - #strDirOUT [""]: path where results are written
+  *
   * Please refer to the #str_par_type_SDDP_S enumeration for a
   * detailed description of each of them.
   *
@@ -653,6 +660,7 @@ public:
    case( strStateFile ): f_state_filename = value; return;
    case( strRandomCutsFile ): f_random_cuts_filename = value; return;
    case( strFilenameSuffix ): f_filename_suffix = value; return;
+   case( strDirOUT): f_dir_out_pathname = value; return;
    case( strSubSolverLogFilePrefix ): {
     f_sub_solver_filename_prefix = value;
     return;
@@ -905,7 +913,7 @@ public:
 
   static const std::vector< std::string > default_values =
    { "regressors.sddp" , "cuts.sddp" , "visited_states.sddp" ,
-     "", "" , "" , "" , "" , "" , "" };
+     "", "" , "" , "" , "" , "" , "" , "" };
 
   if( par >= str_par_type_S::strLastAlgPar && par < strLastAlgPar )
    return default_values[ par - str_par_type_S::strLastAlgPar ];
@@ -1036,7 +1044,8 @@ public:
    case( strStateFile ): return f_state_filename;
    case( strRandomCutsFile ): return f_random_cuts_filename;
    case( strFilenameSuffix ): return f_filename_suffix;
-   case( strSubSolverLogFilePrefix ): return f_sub_solver_filename_prefix;
+   case( strSubSolverLogFilePrefix ): return f_sub_solver_filename_prefix;   
+   case( strDirOUT ): return f_dir_out_pathname;
   }
   return Solver::get_str_par( par );
  }
@@ -1141,6 +1150,7 @@ public:
   if( name == "strRandomCutsFile" ) return strRandomCutsFile;
   if( name == "strFilenameSuffix" ) return strFilenameSuffix;
   if( name == "strSubSolverLogFilePrefix" ) return strSubSolverLogFilePrefix;
+  if( name == "strDirOUT" ) return strDirOUT;
   return Solver::str_par_str2idx( name );
  }
 
@@ -1193,7 +1203,7 @@ public:
   static const std::vector< std::string > parameter_names =
    { "intNStepConv", "intPrintTime", "intNbSimulCheckForConv" ,
      "intNbSimulBackward" , "intNbSimulForward" , "intOutputFrequency" ,
-     "intFirstStageScenarioId" };
+     "intFirstStageScenarioId"  };
 
   if( idx >= int_par_type_S::intLastAlgPar && idx < intLastAlgPar )
    return parameter_names[ idx - int_par_type_S::intLastAlgPar ];
@@ -1234,7 +1244,8 @@ public:
   static const std::vector< std::string > parameter_names =
    { "strRegressorsFilename", "strCutsFilename", "strVisitedStatesFilename" ,
      "strInnerBC" , "strInnerBSC" , "strOutputFile" , "strStateFile" ,
-     "strRandomCutsFile", "strFilenameSuffix" , "strSubSolverLogFilePrefix" };
+     "strRandomCutsFile", "strFilenameSuffix" , "strSubSolverLogFilePrefix",
+     "strDirOUT"	 };
 
   if( idx >= str_par_type_S::strLastAlgPar && idx < strLastAlgPar )
    return parameter_names[ idx - str_par_type_S::strLastAlgPar ];
@@ -1971,6 +1982,9 @@ protected:
 
  /// Prefix for the name of the file to which the random cuts are output
  std::string f_random_cuts_filename;
+ 
+ /// The path where to write the results
+ std::string f_dir_out_pathname = "";
 
  /// The suffix to be added to an output filename every other iteration
  std::string f_filename_suffix = "";
@@ -2133,6 +2147,7 @@ private:
   f_output_filename = get_dflt_str_par( strOutputFile );
   f_state_filename = get_dflt_str_par( strStateFile );
   f_random_cuts_filename = get_dflt_str_par( strRandomCutsFile );
+  f_dir_out_pathname = get_dflt_str_par( strDirOUT );
   f_filename_suffix = get_dflt_str_par( strFilenameSuffix );
   f_sub_solver_filename_prefix = get_dflt_str_par( strSubSolverLogFilePrefix );
   f_handle_events_every_k_iter = Solver::get_dflt_int_par( intEverykIt );
