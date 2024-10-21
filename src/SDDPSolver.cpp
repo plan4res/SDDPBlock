@@ -472,7 +472,7 @@ int SDDPSolver::compute( bool changedvars ) {
   StOpt::backwardForwardSDDP< StOpt::LocalLinearRegressionForSDDP >
   ( sddp_optimizer , number_simulations_for_convergence , initial_state_array ,
     final_cut , dates , mesh_discretization_array , regressors_filename ,
-    f_dir_out_pathname+cuts_filename , f_dir_out_pathname+visited_states_filename , number_iterations_performed ,
+    f_dir_out_pathname+cuts_filename , visited_states_filename , number_iterations_performed ,
     accuracy_achieved_stopt , convergence_frequency , *output_stream ,
 #ifdef USE_MPI
     mpi_communicator ,
